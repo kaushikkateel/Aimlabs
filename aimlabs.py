@@ -67,7 +67,7 @@ class ParticlePrinciple:
     def reset(self):
         self.particles = []
         self.score = 0
-        self.life = 5
+        self.life = 6
         self.hit = True
 
 

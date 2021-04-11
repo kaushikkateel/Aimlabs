@@ -7,12 +7,13 @@ class ParticlePrinciple:
         self.score = 0
         self.life = 5
         self.hit = True
+        self.difficulty_factor = 0.12
 
     def emit(self):
 	    if self.particles:
 		    self.delete_particles()
 		    for particle in self.particles:
-			    particle[1] -= 0.15
+			    particle[1] -= self.difficulty_factor
 			    pygame.draw.circle(screen,pygame.Color('White'),particle[0], int(particle[1]))
 
     def add_particles(self):
@@ -109,6 +110,7 @@ clock = pygame.time.Clock()
 
 score_x = 10
 score_y = 10
+w,h = pygame.display.get_surface().get_size()
 
 particle1 = ParticlePrinciple()
 PARTICLE_EVENT = pygame.USEREVENT + 1
@@ -119,16 +121,51 @@ gameRun = True
 gameOver = False
 menus = True
 final_score = 0
-
 full_heart = pygame.image.load('data/assets/full_heart.png').convert_alpha()
-
 easy_button = button((62, 91, 91),150,270,150,50,'Easy')
 med_button = button((62, 91, 91),150,345,150,50,'Medium')
 hard_button = button((62, 91, 91),150,420,150,50,'Hard')
 
+def button_mech(pos):
+    if easy_button.isOver(pos):
+
+        particle1.difficulty_factor = 0.12
+
+        easy_button.color = (117, 157, 158)
+        hard_button.color = (62, 91, 91)
+        med_button.color = (62, 91, 91)
+
+    if hard_button.isOver(pos):
+
+        particle1.difficulty_factor = 0.25
+
+        hard_button.color = (117, 157, 158)
+        easy_button.color = (62, 91, 91)
+        med_button.color = (62, 91, 91)
+
+    if med_button.isOver(pos):
+
+        particle1.difficulty_factor = 0.175
+
+        med_button.color = (117, 157, 158)
+        hard_button.color = (62, 91, 91)
+        easy_button.color = (62, 91, 91)
+
+
+
+def redraw_button():
+    easy_button.draw(screen)
+    med_button.draw(screen)
+    hard_button.draw(screen)
+
 def show_gameOver(final_score):
+
     screen.fill((30,30,30))
-    w,h = pygame.display.get_surface().get_size()
+
+    easy_button.draw(screen)
+    med_button.draw(screen)
+    hard_button.draw(screen)
+
     font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',128)
     GO = font.render("GAMEOVER", True, (255, 255, 255))
     GO_rect = GO.get_rect(center=(w/2, h/4))
@@ -148,21 +185,26 @@ def show_gameOver(final_score):
     waiting = True
     while waiting:
         clock.tick(120)
+        redraw_button()
+        pygame.display.update()
         for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYUP:
                 waiting = False
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                button_mech(pos)
 
 def menu_page():
     
     screen.fill((30,30,30))
-    w,h = pygame.display.get_surface().get_size()
+    
     easy_button.draw(screen)
     med_button.draw(screen)
     hard_button.draw(screen)
+
     font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',128)
     AL = font.render("AIMLABS", True, (255, 255, 255))
     AL_rect = AL.get_rect(center=(w/2, h/4))
@@ -187,28 +229,9 @@ def menu_page():
             if event.type == pygame.KEYUP:
                 waiting = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if easy_button.isOver(pos):
-                    print('ez')
-                    easy_button.color = (117, 157, 158)
-                    hard_button.color = (62, 91, 91)
-                    med_button.color = (62, 91, 91)
-                if hard_button.isOver(pos):
-                    hard_button.color = (117, 157, 158)
-                    easy_button.color = (62, 91, 91)
-                    med_button.color = (62, 91, 91)
-                    print('hard')
-                if med_button.isOver(pos):
-                    med_button.color = (117, 157, 158)
-                    hard_button.color = (62, 91, 91)
-                    easy_button.color = (62, 91, 91)
-                    print("med")
+                button_mech(pos)
 
     
-
-def redraw_button():
-    easy_button.draw(screen)
-    med_button.draw(screen)
-    hard_button.draw(screen)
 
 while gameRun:
     if menus:

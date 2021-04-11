@@ -88,7 +88,7 @@ class button():
         
         if self.text != '':
             font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',32)
-            text = font.render(self.text, 1, (0,0,0))
+            text = font.render(self.text, 1, (255,255,255))
             win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
 
     def isOver(self, pos):
@@ -122,6 +122,10 @@ final_score = 0
 
 full_heart = pygame.image.load('data/assets/full_heart.png').convert_alpha()
 
+easy_button = button((62, 91, 91),150,270,150,50,'Easy')
+med_button = button((62, 91, 91),150,345,150,50,'Medium')
+hard_button = button((62, 91, 91),150,420,150,50,'Hard')
+
 def show_gameOver(final_score):
     screen.fill((30,30,30))
     w,h = pygame.display.get_surface().get_size()
@@ -153,22 +157,30 @@ def show_gameOver(final_score):
 
 
 def menu_page():
+    
     screen.fill((30,30,30))
     w,h = pygame.display.get_surface().get_size()
-
-    easy_button = button((0,255,0),150,255,250,100,'Easy')
-    hard_button = button((0,255,0),150,255,250,100,'Hard')
     easy_button.draw(screen)
+    med_button.draw(screen)
     hard_button.draw(screen)
     font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',128)
     AL = font.render("AIMLABS", True, (255, 255, 255))
     AL_rect = AL.get_rect(center=(w/2, h/4))
     screen.blit(AL,AL_rect)
+
+    font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',52)
+    AL = font.render("Press SPACE to start", True, (255, 255, 255))
+    AL_rect = AL.get_rect(center=(w/2, h/2))
+    screen.blit(AL,AL_rect)
+
+    pygame.display.flip()
     waiting = True
     while waiting:
         clock.tick(120)
+        redraw_button()
+        pygame.display.update()
         for event in pygame.event.get():
-            pos = pygame.mouse.get_pos
+            pos = pygame.mouse.get_pos()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -177,11 +189,26 @@ def menu_page():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if easy_button.isOver(pos):
                     print('ez')
+                    easy_button.color = (117, 157, 158)
+                    hard_button.color = (62, 91, 91)
+                    med_button.color = (62, 91, 91)
                 if hard_button.isOver(pos):
+                    hard_button.color = (117, 157, 158)
+                    easy_button.color = (62, 91, 91)
+                    med_button.color = (62, 91, 91)
                     print('hard')
+                if med_button.isOver(pos):
+                    med_button.color = (117, 157, 158)
+                    hard_button.color = (62, 91, 91)
+                    easy_button.color = (62, 91, 91)
+                    print("med")
 
     
 
+def redraw_button():
+    easy_button.draw(screen)
+    med_button.draw(screen)
+    hard_button.draw(screen)
 
 while gameRun:
     if menus:

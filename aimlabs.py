@@ -67,10 +67,38 @@ class ParticlePrinciple:
     def reset(self):
         self.particles = []
         self.score = 0
-        self.life = 6
+        self.life = 5
         self.hit = True
 
+class button():
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
 
+    def draw(self,win,outline=None):
+        #Call this method to draw the button on the screen
+        if outline:
+            pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+            
+        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)
+        
+        if self.text != '':
+            font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',32)
+            text = font.render(self.text, 1, (0,0,0))
+            win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
+
+    def isOver(self, pos):
+        #Pos is the mouse position or a tuple of (x,y) coordinates
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+            
+        return False
+        
 pygame.init()
 # monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
 monitor_size = [1280,720]
@@ -89,6 +117,7 @@ pygame.time.set_timer(PARTICLE_EVENT,1000)
 pygame.mouse.set_cursor(pygame.cursors.broken_x)
 gameRun = True
 gameOver = False
+menus = True
 final_score = 0
 
 full_heart = pygame.image.load('data/assets/full_heart.png').convert_alpha()
@@ -122,7 +151,43 @@ def show_gameOver(final_score):
             if event.type == pygame.KEYUP:
                 waiting = False
 
+
+def menu_page():
+    screen.fill((30,30,30))
+    w,h = pygame.display.get_surface().get_size()
+
+    easy_button = button((0,255,0),150,255,250,100,'Easy')
+    hard_button = button((0,255,0),150,255,250,100,'Hard')
+    easy_button.draw(screen)
+    hard_button.draw(screen)
+    font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',128)
+    AL = font.render("AIMLABS", True, (255, 255, 255))
+    AL_rect = AL.get_rect(center=(w/2, h/4))
+    screen.blit(AL,AL_rect)
+    waiting = True
+    while waiting:
+        clock.tick(120)
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if easy_button.isOver(pos):
+                    print('ez')
+                if hard_button.isOver(pos):
+                    print('hard')
+
+    
+
+
 while gameRun:
+    if menus:
+        menu_page()
+        menus = False
+
     if gameOver:
         show_gameOver(final_score)
         gameOver = False

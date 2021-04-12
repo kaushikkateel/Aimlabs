@@ -83,9 +83,9 @@ class button():
     def draw(self,win,outline=None):
         #Call this method to draw the button on the screen
         if outline:
-            pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+            pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0,5)
             
-        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)
+        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0,5)
         
         if self.text != '':
             font = pygame.font.Font('data/assets/advanced-pixel-7-font/advanced_pixel-7.ttf',32)
